@@ -1,7 +1,7 @@
 # todo convert to async await fetch
 # todo do 
 # accessibility w hidden tables
-
+# todo views -> visits
 Observable = require 'o_0'
 commaNumber = require 'comma-number'
 axios = require 'axios'
@@ -20,61 +20,41 @@ module.exports = (application, teamOrProject, type) ->
 
   self = 
 
-    # todo views -> visits
-  
-    remixes: Observable []
+    emixes: Observable []
     totalRemixes: Observable ""
     totalVisits: Observable ""
     views: Observable []
     referrers: Observable []
     xAxis: Observable []
  
-    timeFrameName: Observable "Last 2 Weeks"      
-    # consolidatedDataPoints: (metricData) ->
-    # 
-    # return down to 31 points
-    # return early metricData.y.length is less     #  # returns a point per day
-     #  ;
-   createChart: (metricData, elementId) ->
-    # consolidatedDataPoints
-     c3.generate
-      bindto: "##{elementId}"
-      data:
-          type: 'bar'
-          x: 'x'
-          xFormat: '%Y'
-          json:
-            x: metricData.x
-            "All Projects": metricData.y
-      axis:
-          x: 
-              type: 'timeseries'
-              localtime: false
-              tick:
-                  format: '%b %e'
-      legend:
-         hide: true
-      color:
-        pattern: ['#70ecff', 'teal']
-      grid:
-        x:
-          show: true
-        y:
-          show: true
+    timeFrameName: Observable "Last 2 Weeks"
 
-            
-    # createReferrersChart: (metricData, elementId) ->
-    #   data: {
-    #     labels: true
-    #   }
-    #   axis: {
-    #     rotated: true
-    #   }
-
-    # createTable: (metricData) ->
-    # iterate through observables on view
-    #                  data1y       data2y
-    #   oct 2         12123           123
+    createChart: (metricData, elementId) ->
+      # consolidatedDataPoints
+      c3.generate
+        bindto: "##{elementId}"
+        data:
+            type: 'bar'
+            x: 'x'
+            xFormat: '%Y'
+            json:
+              x: metricData.x
+              "All Projects": metricData.y
+        axis:
+            x: 
+                type: 'timeseries'
+                localtime: false
+                tick:
+                    format: '%b %e'
+        legend:
+           hide: true
+        color:
+          pattern: ['#70ecff', 'teal']
+        grid:
+          x:
+            show: true
+          y:
+            show: true
 
     parseTotal: (metricData) ->
       metricData.y.reduce (a, b) ->
@@ -90,15 +70,11 @@ module.exports = (application, teamOrProject, type) ->
       console.log '🎂 chartData', chartData # temp
       remixesData = chartData[0]
       visitsData = chartData[1]
-
       self.totalRemixes (self.parseTotal remixesData)
       self.totalVisits (self.parseTotal visitsData)
       self.createChart visitsData, 'visits-chart'
       # self.createChart remixesData, 'remixes-chart'
-
       # data.referrers = [{domain: "ourdot-checklist.glitch.me", requests: 2684, self: true}, {}]   
-
-
 
     getAnalyticsData: (query) ->
       id = teamOrProject.id()
@@ -123,7 +99,6 @@ module.exports = (application, teamOrProject, type) ->
     hiddenUnlessGettingAnalytics: ->
       'hidden' unless application.gettingAnalytics()
 
-
+  console.log self
   self.getAnalyticsData()
-    # from: FROM_TWO_WEEKS
   return AnalyticsTemplate self
