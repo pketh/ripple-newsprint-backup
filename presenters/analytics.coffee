@@ -1,4 +1,6 @@
 # todo convert to async await fetch
+# todo do 
+# accessibility w hidden tables
 
 Observable = require 'o_0'
 commaNumber = require 'comma-number'
@@ -9,6 +11,7 @@ c3 = require 'c3'
 AnalyticsTemplate = require "../templates/includes/analytics"
 
 METRICS = ["remixes", "visits"]
+
 FROM_TWO_WEEKS = Date.now() - 2 * 7 * 24 * 3600 * 1000 #
 
 module.exports = (application, teamOrProject, type) ->
@@ -25,44 +28,41 @@ module.exports = (application, teamOrProject, type) ->
     views: Observable []
     referrers: Observable []
     xAxis: Observable []
-      
-      
-    consolidatedDataPoints: (metricData) ->
-      # returns a point per day
-      ;
-      
-    createChart: (metricData, elementId) ->
-      # consolidatedDataPoints
-      
-      # ? change ranges:
-      # months = if > 31 points
-      # days = if < 12 points
+ 
+    timeFrameName: Observable "Last 2 Weeks"      
+    # consolidatedDataPoints: (metricData) ->
+    # 
+    # return down to 31 points
+    # return early metricData.y.length is less     #  # returns a point per day
+     #  ;
+   createChart: (metricData, elementId) ->
+    # consolidatedDataPoints
+     c3.generate
+      bindto: "##{elementId}"
+      data:
+          type: 'bar'
+          x: 'x'
+          xFormat: '%Y'
+          json:
+            x: metricData.x
+            "All Projects": metricData.y
+      axis:
+          x: 
+              type: 'timeseries'
+              localtime: false
+              tick:
+                  format: '%b %e'
+      legend:
+         hide: true
+      color:
+        pattern: ['#70ecff', 'teal']
+      grid:
+        x:
+          show: true
+        y:
+          show: true
 
-      c3.generate
-        bindto: "##{elementId}"
-        data:
-            type: 'bar'
-            x: 'x'
-            xFormat: '%Y'
-            json:
-              x: metricData.x
-              "All Projects": metricData.y
-        axis:
-            x: 
-                type: 'timeseries'
-                localtime: false
-                tick:
-                    format: '%b %e'
-        legend:
-          hide: true
-        grid:
-          x:
-            show: true
-          y:
-            show: true
-        color:
-          pattern: ['#70ecff', 'teal']
-
+            
     # createReferrersChart: (metricData, elementId) ->
     #   data: {
     #     labels: true
@@ -70,6 +70,11 @@ module.exports = (application, teamOrProject, type) ->
     #   axis: {
     #     rotated: true
     #   }
+
+    # createTable: (metricData) ->
+    # iterate through observables on view
+    #                  data1y       data2y
+    #   oct 2         12123           123
 
     parseTotal: (metricData) ->
       metricData.y.reduce (a, b) ->
@@ -81,8 +86,8 @@ module.exports = (application, teamOrProject, type) ->
         x: buckets.map (x) -> new Date x.startTime
         y: buckets.map (y) -> y.analytics[metric] ? 0
         type: metric
-      console.log 'data', data #
-      console.log '🎂 chartData', chartData #
+      console.log 'data', data # temp
+      console.log '🎂 chartData', chartData # temp
       remixesData = chartData[0]
       visitsData = chartData[1]
 
@@ -90,11 +95,11 @@ module.exports = (application, teamOrProject, type) ->
       self.totalVisits (self.parseTotal visitsData)
       self.createChart visitsData, 'visits-chart'
       # self.createChart remixesData, 'remixes-chart'
-          
-      # data.referrers = [{domain: "ourdot-checklist.glitch.me", requests: 2684, self: true}, {}]
+
+      # data.referrers = [{domain: "ourdot-checklist.glitch.me", requests: 2684, self: true}, {}]   
 
 
-        
+
     getAnalyticsData: (query) ->
       id = teamOrProject.id()
       CancelToken = axios.CancelToken
