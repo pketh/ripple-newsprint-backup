@@ -38,8 +38,9 @@ module.exports = (application) ->
         users.map UserAvatarTemplate
 
     teamAnalytics: ->
-      AnalyticsPresenter application, self.team()
-        
+      if self.team().fetched()
+        AnalyticsPresenter application, self.team(), 'team'
+
     ctaButtons: ->
       CtaButtonsPresenter(application)
 

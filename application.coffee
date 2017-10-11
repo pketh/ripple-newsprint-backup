@@ -56,6 +56,9 @@ self = Model(
   searchResultsTeamsLoaded: Observable false
   searchResultsHaveNoTeams: Observable false
   
+  # analytics
+  gettingAnalytics: Observable false
+  
   # questions
   questions: Observable []
   gettingQuestions: Observable false

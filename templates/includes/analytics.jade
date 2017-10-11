@@ -1,3 +1,19 @@
-div
-  h1 yoyoyo
-  p= @test
+section.analytics
+  h2 Stats
+  - # move marketing sell here
+  - # stat data is randomly skewed and only shows the last 2 days
+
+  - # get full data for your own team with 'glitch for platforms'
+  - # .chart-container
+  - #   #remixes-chart.chart
+  
+  .chart-container
+    h3
+      span= "#{@totalVisits()} Visits Over Timeframe"
+      span.emoji.emoji-in-title.microphone
+    button.button-small.button-tertiary Last 2 Weeks
+    button.button-small.button-tertiary All Projects
+    #visits-chart.chart
+    
+    h3 From
+    
